@@ -10,11 +10,6 @@ require("./config/db/mongodb")
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
-var chargingRouter = require('./routes/charging/index'); // 充电桩项目api
-var wxRouter = require('./routes/wx/index'); // 微信公众号项目api
-var wechat = require('./lib/wx/wechat'); // 微信公众号项目 鉴权相关方法封装
-
-
 var app = express();
 
 // 跨域解决,在app.js中引入模块
@@ -32,30 +27,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 批量注册 微信公众号项目的所有api
-// 获取微信accessToken, 【服务器一启动就会调用】
-wechat.getAccessToken().then(token => {
-  global.accessToken = token
-})
-
-app.use(wechat.init)
-for (const key in wxRouter) {
-  if (Object.hasOwnProperty.call(wxRouter, key)) {
-    const wxR = wxRouter[key];
-    app.use('/wx', wxR);
-  }
-}
-
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
-// 批量注册 充电桩项目的所有api
-for (const key in chargingRouter) {
-  if (Object.hasOwnProperty.call(chargingRouter, key)) {
-    const chargeRouter = chargingRouter[key];
-    app.use('/charging', chargeRouter);
-  }
-}
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
