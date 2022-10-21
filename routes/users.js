@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const { getUser } = require("../dao/user")
+const { sendMail } = require("../dao/email")
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -8,8 +9,16 @@ router.get('/', function(req, res, next) {
 });
 // 测试获取用户数据
 router.get('/getUser', function(req, res, next) {
-  console.log(8)
   getUser(res);
 });
+router.post('/sendMail', function(req, res) {
+  const email = req.body.email;
+  console.log(email)
+  try {
+    sendMail(email, res)
+  } catch (error) {
+    res.send(error)
+  }
+})
 
 module.exports = router;

@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const bodyParser = require("body-parser")
 // 连接数据库
 require("./config/db/mongodb")
 
@@ -16,6 +17,10 @@ var app = express();
 var cors = require('cors')
 // 解决跨域(建议将此项配置放在所有app.use()的最上方)
 app.use(cors())
+// 解析 application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+// 解析 application/json
+app.use(bodyParser.json())
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
