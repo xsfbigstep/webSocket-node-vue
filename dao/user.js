@@ -1,13 +1,13 @@
 const db = require("../config/db/mongodb");
-const User = require("../model/user");
+const { message }  = require("../model/user");
 
 exports.getUser = (res) => {
-  console.log(User)
-  User.find((err, user) => {
+  console.log(message)
+  message.find((err, data) => {
     if(err){
       res.send(err);
     } else {
-      res.send(user)
+      res.send(data)
     }
   })
 }
