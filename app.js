@@ -4,12 +4,17 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const bodyParser = require("body-parser")
+// 白名单[不需要验证token的api地址]
+const whiteList = require("./config/whiteList")
+// 验证token
+const { verifyToken } = require("./dao/jwt")
+const { Result }  = require("./model/dbmodel");
 // 连接数据库
 require("./config/db/mongodb")
 
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var userRouter = require('./routes/user');
 
 var app = express();
 
@@ -32,8 +37,22 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// token前置验证
+// app.use((req,res,next) => {
+//   if(!whiteList.noTokenWhiteList.includes(req.path)) {
+//     //判断请求头是否携带正确的token
+//     verifyToken(req.headers.authorization).then(res => {
+//         next()
+//     }).catch(e => {
+//       new Result('token验证失败').fail(res);
+//     })
+//   } else {
+//       next()
+//   }
+// })
+
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/user', userRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
